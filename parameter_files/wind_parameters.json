@@ -1,0 +1,30 @@
+{
+  "Turbine": {
+    "wind_turbine_powercurve_windspeeds": [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5, 13, 13.5, 14, 14.5, 15, 15.5, 16, 16.5, 17, 17.5, 18, 18.5, 19, 19.5, 20, 20.5, 21, 21.5, 22, 22.5, 23, 23.5, 24, 24.5, 25],
+    "wind_turbine_powercurve_powerout": [0, 0, 0, 0, 0, 0, 89, 176, 325, 520, 756, 1039, 1375, 1772, 2232, 2760, 3350, 3976, 4582, 5097, 5476, 5720, 5861, 5934, 5970, 5987, 5994, 5998, 5999, 6000, 6000, 6000, 6000, 6000, 6000, 6000, 6000, 6000, 6000, 6000, 6000, 5898, 5788, 5678, 5568, 5458, 5348, 5237, 5128, 5017, 4907],
+    "wind_turbine_hub_ht": 120,
+    "wind_turbine_rotor_diameter": 167
+  },
+  "Losses": {
+    "avail_bop_loss": 12,
+    "avail_grid_loss": 0.0,
+    "avail_turb_loss": 0.0,
+    "elec_eff_loss": 0.0,
+    "elec_parasitic_loss": 0.0,
+    "env_degrad_loss": 0.0,
+    "env_env_loss": 0.0,
+    "env_exposure_loss": 0.0,
+    "env_icing_loss": 0.0,
+    "ops_env_loss": 0.0,
+    "ops_grid_loss": 0.0,
+    "ops_load_loss": 0.0,
+    "ops_strategies_loss": 0.0,
+    "turb_generic_loss": 0.0,
+    "turb_hysteresis_loss": 0.0,
+    "turb_perf_loss": 0.0,
+    "turb_specific_loss": 0.0,
+    "wake_ext_loss": 0.0,
+    "wake_future_loss": 0.0,
+    "wake_int_loss": 0.0
+  }
+}

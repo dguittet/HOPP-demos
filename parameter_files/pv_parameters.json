@@ -1,0 +1,9 @@
+{
+  "SystemDesign": {
+    "module_type": 1,
+    "array_type": 2,
+    "tilt": 0,
+    "dc_degradation": [0],
+    "losses": 11.95
+  }
+}
