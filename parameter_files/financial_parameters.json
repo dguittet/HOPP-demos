@@ -24,12 +24,12 @@
                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
                                 0, 0, 0, 0, 0
       ],
-      "batt_replacement_schedule_percent": [0, 0, 0, 0, 0, 0, 0, 0, 0, 50,
-                                            0, 0, 0, 0, 0, 0, 0, 0, 0, 50,
+      "batt_replacement_schedule_percent": [0, 0, 0, 0, 0, 0, 0, 0, 0, 80,
+                                            0, 0, 0, 0, 0, 0, 0, 0, 0, 80,
                                             0, 0, 0, 0, 0, 0, 0, 0, 0, 50,
                                             0, 0, 0, 0, 0
       ],
-      "om_batt_replacement_cost": [500]
+      "om_batt_replacement_cost": [300]
     }
   },
   "FinancialParameters": {

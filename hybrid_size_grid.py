@@ -112,9 +112,11 @@ def simulate_hybrid(sizes, plotting=False):
         try:
             res[val] = json.loads(str(getattr(hybrid_plant, val)))
         except:
-            pass
-    # print(json.dumps(res))
+            print("error printing", val)
+    import pprint
+    pprint.pprint(res)
     print(sizes, {"npvs": npvs, "bcr": benefit_cost_ratios})
+    print(hybrid_plant.battery.replacement_costs)
 
     # import numpy as np
     # np.savetxt(str(params_dir / "grid_output.txt"), hybrid_plant.grid.generation_profile[0:8760])
