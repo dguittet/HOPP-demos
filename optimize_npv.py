@@ -279,23 +279,6 @@ class HybridLayoutProblem(OptimizationProblem):
             print(candidate, evaluation)
             score = evaluation - penalty_conforming - penalty_layout
 
-            if self.dispatch_db_dir:
-                wind_mw = hybrid_plant.wind.system_capacity_kw * 1e-3
-                solar_mw = hybrid_plant.pv.system_capacity_kw * 1e-3
-                battery_mw = hybrid_plant.battery.system_capacity_kw * 1e-3
-                fname = f"{round(wind_mw)}_{round(solar_mw)}_{round(battery_mw)}_disp.txt"
-                if not os.path.exists(self.dispatch_db_dir / fname):
-                    dispatch_data = TableDataRecorder(self.dispatch_db_dir / fname)
-                    dispatch_data.add_columns("wind_mw", "solar_mw", "batt_mw", "wind_gen", "pv_gen", "batt_disp")
-                    wind_gen = hybrid_plant.wind.generation_profile[0:8760]
-                    solar_gen = hybrid_plant.pv.generation_profile[0:8760]
-                    battery_gen = hybrid_plant.battery.generation_profile[0:8760]
-                    dispatch_data.accumulate(wind_mw, solar_mw, battery_mw,
-                                             wind_gen if sum(wind_gen) else [0],
-                                             solar_gen if sum(solar_gen) else [0],
-                                             battery_gen if sum(battery_gen) else [0])
-                    dispatch_data.store()
-
             # hybrid_plant.layout.plot()
             # import matplotlib.pyplot as plt
             # plt.show()
@@ -308,8 +291,8 @@ class HybridLayoutProblem(OptimizationProblem):
 
 optimizer_config = {
     'method':               'CMA-ES',
-    'nprocs':               1,
-    'generation_size':      20,
+    'nprocs':               36,
+    'generation_size':      100,
     'selection_proportion': .33,
     'prior_scale':          1.0,
     # 'prior_params':         {
@@ -320,20 +303,7 @@ optimizer_config = {
     }
 
 if __name__ == "__main__":
-
-    config_dict = {}
-    if len(sys.argv) > 1:
-        with open(sys.argv[1], "r") as f:
-            config_dict = json.load(f)
-    if len(sys.argv) > 2:
-        energy_price_mult = float(sys.argv[2])
-    else:
-        energy_price_mult = 1.0
-    if config_dict:
-        out_dir = Path(sys.argv[1]).parent
-    else:
-        out_dir = Path(os.getcwd())
-
+    # read inputs from JSON files
     with open(params_dir / "pv_parameters.json", 'r') as f:
         pv_info = json.load(f)["SystemDesign"]
     with open(params_dir / "wind_parameters.json", 'r') as f:
@@ -343,9 +313,21 @@ if __name__ == "__main__":
         fin_info = json.load(f)
     cost_info = fin_info['capex']
 
+    # modify original inputs from a config JSON file
+    config_dict = {}
+    if len(sys.argv) > 1:
+        with open(sys.argv[1], "r") as f:
+            config_dict = json.load(f)
+    if config_dict:
+        out_dir = Path(sys.argv[1]).parent
+    else:
+        out_dir = Path(os.getcwd())
+
     for k, v in config_dict.items():
         if k == "discount_rate":
             fin_info["FinancialParameters"]["real_discount_rate"] = v
+        elif k == "energy_price_base":
+            fin_info["Revenue"]["ppa_price_input"] = v * 0.01   # convert from cents
         elif k == "wind_losses":
             wind_info["Losses"]["avail_bop_loss"] = v
         elif k == "grid_charging":
@@ -362,23 +344,20 @@ if __name__ == "__main__":
                     solar_resource_file=solar_file,
                     wind_resource_file=wind_file,
                     grid_resource_file=prices_file)
-    site.elec_prices._data = [i * energy_price_mult for i in site.elec_prices._data[0:8760]]
 
     logger.info(f"{config_dict}")
-    logger.info(f"energy_price_mult: {energy_price_mult}")
+    logger.info(f"energy_price_base: {fin_info['Revenue']['ppa_price_input']}")
     logger.info(f"pv_components: {pv_info}")
     logger.info(f"wind_components: {wind_info}")
     logger.info(f"revenue_components: {fin_info['Revenue']}")
     logger.info(f"financial: {fin_info['FinancialParameters']}")
 
-    disp_log_name = f"cmaes_{energy_price_mult}_dispatch"
-
     problem = HybridLayoutProblem(site, turb_size_kw=turb_rating_kw, pv_config=pv_info, wind_config=wind_info,
                                   cost_config=cost_info, fin_config=fin_info, dispatch_config=dispatch_options,
-                                  sim_config=simulation_options, dispatch_db_dir=out_dir / disp_log_name
+                                  sim_config=simulation_options
                                   )
     optimizer = OptimizationDriver(problem, recorder=DataRecorder.make_data_recorder(str(out_dir),
-                                                                                     disp_log_name),
+                                                                                     "results.log"),
                                    **optimizer_config)
     # 42 MW
     #candidate = np.array([6.531190379823154, 1.0, 0.0, -0.9771731174547543, 0.5451284809388273, 0.3,
