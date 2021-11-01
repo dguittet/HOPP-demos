@@ -333,7 +333,7 @@ if __name__ == "__main__":
         elif k == "grid_charging":
             if dispatch_options:
                 dispatch_options["grid_charging"] = bool(v)
-        else:
+        elif k != 'objective':
             raise IOError(f"Configuration key '{k}' not recognized")
 
     # Get resource
