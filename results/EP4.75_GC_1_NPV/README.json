@@ -1,5 +1,5 @@
 {
-  "energy_price_base": 3,
+  "energy_price_base": 4.75,
   "grid_charging": 1,
   "objective": "NPV"
 }
