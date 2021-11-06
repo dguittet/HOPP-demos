@@ -13,7 +13,7 @@ from tools.optimization import DataRecorder, TableDataRecorder
 from tools.optimization.optimization_problem import OptimizationProblem
 from tools.optimization.optimization_driver import OptimizationDriver
 
-from hybrid.sites import flatirons_site
+from hybrid.sites import make_irregular_site
 from financial_calcs import hybrid_capacity_credit
 
 
@@ -337,10 +337,18 @@ if __name__ == "__main__":
             raise IOError(f"Configuration key '{k}' not recognized")
 
     # Get resource
-    solar_file = resource_dir / "32.43861838431444__-99.73363995829895_32.438818_-99.734703_psm3_60_2013.csv"
-    wind_file = resource_dir / "lat32.43_lon-99.73__2013_120m.srw"
+    # texas
+    # solar_file = resource_dir / "32.43861838431444__-99.73363995829895_32.438818_-99.734703_psm3_60_2013.csv"
+    # wind_file = resource_dir / "lat32.43_lon-99.73__2013_120m.srw"
+
+    # paper location
+    location = (36.334, -119.769, 70.0)
+    solar_file = resource_dir / "36.334__-119.769_43.724007_-65.978570_psm3_60_2012.csv"
+    wind_file = resource_dir / "lat36.33_lon-119.77__2012_120m.srw"
+
     prices_file = resource_dir / "pricing-data-2015-IronMtn-002_factors.csv"
-    site = SiteInfo(flatirons_site,
+
+    site = SiteInfo(make_irregular_site(lat=location[0], lon=location[1], elev=location[2]),
                     solar_resource_file=solar_file,
                     wind_resource_file=wind_file,
                     grid_resource_file=prices_file)
