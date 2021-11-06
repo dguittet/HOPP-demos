@@ -109,8 +109,8 @@ if __name__ == "__main__":
     fin_info, wind_info, dispatch_options, site = setup_config(config_dict, fin_info, wind_info, resource_dir)
 
     # Run a single system
-    simulate_hybrid((100, 100, 50), False)
-    exit()
+    # simulate_hybrid((100, 100, 50), False)
+    # exit()
 
     # Run a grid of sizes
     solar_sizes = range(1, 401, 75)
