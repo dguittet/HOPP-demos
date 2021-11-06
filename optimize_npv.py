@@ -327,7 +327,7 @@ if __name__ == "__main__":
         if k == "discount_rate":
             fin_info["FinancialParameters"]["real_discount_rate"] = v
         elif k == "energy_price_base":
-            fin_info["Revenue"]["ppa_price_input"] = v * 0.01   # convert from cents
+            fin_info["Revenue"]["ppa_price_input"] = (v * 0.01,)   # convert from cents
         elif k == "wind_losses":
             wind_info["Losses"]["avail_bop_loss"] = v
         elif k == "grid_charging":
