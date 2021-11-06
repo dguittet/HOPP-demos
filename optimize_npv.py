@@ -9,12 +9,13 @@ from hybrid.sites import SiteInfo
 from hybrid.hybrid_simulation import HybridSimulation, logger
 from hybrid.layout.wind_layout import WindBoundaryGridParameters
 from hybrid.layout.pv_layout import PVGridParameters, module_power
-from tools.optimization import DataRecorder, TableDataRecorder
+from tools.optimization import DataRecorder
 from tools.optimization.optimization_problem import OptimizationProblem
 from tools.optimization.optimization_driver import OptimizationDriver
 
 from hybrid.sites import make_irregular_site
 from financial_calcs import hybrid_capacity_credit
+from setup_config import import_config, setup_config
 
 
 resource_dir = (Path(__file__).parent / "resource_files").absolute()
@@ -25,11 +26,6 @@ simulation_options = {
         'wind': {'skip_financial': True},
         'battery': {'skip_financial': True}
         }
-dispatch_options = {
-    # 'battery_dispatch': 'one_cycle_heuristic',
-    'grid_charging': True,
-    'log_name': ""  # need to disable for multiprocessing
-}
 
 
 # Setup Optimization Candidate
@@ -291,7 +287,7 @@ class HybridLayoutProblem(OptimizationProblem):
 
 optimizer_config = {
     'method':               'CMA-ES',
-    'nprocs':               36,
+    'nprocs':               18,
     'generation_size':      100,
     'selection_proportion': .33,
     'prior_scale':          1.0,
@@ -303,17 +299,6 @@ optimizer_config = {
     }
 
 if __name__ == "__main__":
-    # read inputs from JSON files
-    with open(params_dir / "pv_parameters.json", 'r') as f:
-        pv_info = json.load(f)["SystemDesign"]
-    with open(params_dir / "wind_parameters.json", 'r') as f:
-        wind_info = json.load(f)
-    turb_rating_kw = max(wind_info['Turbine']['wind_turbine_powercurve_powerout'])
-    with open(params_dir / "financial_parameters.json", 'r') as f:
-        fin_info = json.load(f)
-    cost_info = fin_info['capex']
-
-    # modify original inputs from a config JSON file
     config_dict = {}
     if len(sys.argv) > 1:
         with open(sys.argv[1], "r") as f:
@@ -323,35 +308,11 @@ if __name__ == "__main__":
     else:
         out_dir = Path(os.getcwd())
 
-    for k, v in config_dict.items():
-        if k == "discount_rate":
-            fin_info["FinancialParameters"]["real_discount_rate"] = v
-        elif k == "energy_price_base":
-            fin_info["Revenue"]["ppa_price_input"] = (v * 0.01,)   # convert from cents
-        elif k == "wind_losses":
-            wind_info["Losses"]["avail_bop_loss"] = v
-        elif k == "grid_charging":
-            if dispatch_options:
-                dispatch_options["grid_charging"] = bool(v)
-        elif k != 'objective':
-            raise IOError(f"Configuration key '{k}' not recognized")
+    # read inputs from JSON files
+    pv_info, wind_info, fin_info, cost_info, turb_rating_kw = import_config(params_dir)
 
-    # Get resource
-    # texas
-    # solar_file = resource_dir / "32.43861838431444__-99.73363995829895_32.438818_-99.734703_psm3_60_2013.csv"
-    # wind_file = resource_dir / "lat32.43_lon-99.73__2013_120m.srw"
-
-    # paper location
-    location = (36.334, -119.769, 70.0)
-    solar_file = resource_dir / "36.334__-119.769_43.724007_-65.978570_psm3_60_2012.csv"
-    wind_file = resource_dir / "lat36.33_lon-119.77__2012_120m.srw"
-
-    prices_file = resource_dir / "pricing-data-2015-IronMtn-002_factors.csv"
-
-    site = SiteInfo(make_irregular_site(lat=location[0], lon=location[1], elev=location[2]),
-                    solar_resource_file=solar_file,
-                    wind_resource_file=wind_file,
-                    grid_resource_file=prices_file)
+    # modify original inputs from a config JSON file
+    fin_info, wind_info, dispatch_options, site = setup_config(config_dict, fin_info, wind_info, resource_dir)
 
     logger.info(f"{config_dict}")
     logger.info(f"energy_price_base: {fin_info['Revenue']['ppa_price_input']}")
@@ -367,17 +328,17 @@ if __name__ == "__main__":
     optimizer = OptimizationDriver(problem, recorder=DataRecorder.make_data_recorder(str(out_dir),
                                                                                      "results.log"),
                                    **optimizer_config)
-    # 42 MW
-    candidate = np.array([8.273861950500912, 0.0, 2.215438251144771, -0.5990308745233592, 0.3370498165090887, 0.0,
-                          0.5692060027320252, 0.336565603590347, 0.22708080692015087, 0.23625796087304649,
-                          2.900603473909988, 8.106257286639625, 0.4100764661988576, 0.0054485233298723155])
-    print(problem.objective(candidate))
-    exit()
+    # test
+    # candidate = np.array([8.273861950500912, 0.0, 2.215438251144771, -0.5990308745233592, 0.3370498165090887, 0.0,
+    #                       0.5692060027320252, 0.336565603590347, 0.22708080692015087, 0.23625796087304649,
+    #                       2.900603473909988, 8.106257286639625, 0.4100764661988576, 0.0054485233298723155])
+    # print(problem.objective(candidate))
+    # exit()
 
     best_score, best_evaluation, best_solution = optimizer.central_solution()
     print(-1, ' ', best_score, best_evaluation)
 
-    while optimizer.num_iterations() < 20:
+    while optimizer.num_iterations() < 12:
         optimizer.step()
         best_score, best_evaluation, best_solution = optimizer.best_solution()
         central_score, central_evaluation, central_solution = optimizer.central_solution()
