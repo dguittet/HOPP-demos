@@ -165,7 +165,7 @@ if __name__ == "__main__":
     out_dir = params_dir.parent / "results"
     if config_dict:
         out_dir = Path(sys.argv[1]).parent
-    with mp.Pool(12) as p:
+    with mp.Pool(36) as p:
         results = p.map(simulate_hybrid, product(solar_sizes, wind_sizes, battery_sizes))
         with open(out_dir / "hybrid_size_grid.json", "w") as f:
             json.dump(results, f)
