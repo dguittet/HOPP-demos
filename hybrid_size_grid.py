@@ -85,7 +85,7 @@ def simulate_hybrid(sizes, plotting=False):
 
     # setup capacity credit for wind and solar, hybrid will be set up within opt loop
     hybrid_plant.assign(fin_info["Revenue"])
-    hybrid_plant.ppa_price = 0.05
+    hybrid_plant.ppa_price = 0.0425
 
     # O&M costs
     hybrid_plant.assign(fin_info["SystemCosts"])
@@ -136,6 +136,8 @@ if __name__ == "__main__":
     for k, v in config_dict.items():
         if k == "discount_rate":
             fin_info["FinancialParameters"]["real_discount_rate"] = v
+        elif k == "energy_price_base":
+            fin_info["Revenue"]["ppa_price_input"] = (v * 0.01,)   # convert from cents
         elif k == "wind_losses":
             wind_info["Losses"]["avail_bop_loss"] = v
         elif k == "grid_charging":
@@ -146,7 +148,7 @@ if __name__ == "__main__":
     logger.info(f"config: {config_dict}")
 
     # Run a single system
-    simulate_hybrid((200, 200, 100), True)
+    simulate_hybrid((6, 123, 2), True)
 
     exit()
 
