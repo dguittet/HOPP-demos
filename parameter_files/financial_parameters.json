@@ -51,11 +51,13 @@
     "pv": {
       "ptc_fed_amount": [0],
       "itc_fed_amount": 0,
-      "itc_fed_percent": 26
+      "itc_fed_percent": 22
     },
     "wind": {
-      "ptc_fed_amount": [0],
-      "ptc_fed_escal": 0,
+      "ptc_fed_amount": [0.015],
+      "ptc_fed_escal": 2.5,
+      "ptc_fed_term": 10,
+      "ptc_sta_term": 10,
       "itc_fed_amount": 0,
       "itc_fed_percent": 0
     }

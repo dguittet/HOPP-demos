@@ -28,8 +28,13 @@ cost_info = fin_info['capex']
 # Get resource
 resource_dir = (Path(__file__).parent / "resource_files").absolute()
 
-solar_file = resource_dir / "32.43861838431444__-99.73363995829895_32.438818_-99.734703_psm3_60_2013.csv"
-wind_file = resource_dir / "lat32.43_lon-99.73__2013_120m.srw"
+# texas
+# solar_file = resource_dir / "32.43861838431444__-99.73363995829895_32.438818_-99.734703_psm3_60_2013.csv"
+# wind_file = resource_dir / "lat32.43_lon-99.73__2013_120m.srw"
+
+# paper location
+solar_file = resource_dir / "36.334__-119.769_43.724007_-65.978570_psm3_60_2012.csv"
+wind_file = resource_dir / "lat36.33_lon-119.77__2012_120m.srw"
 prices_file = resource_dir / "pricing-data-2015-IronMtn-002_factors.csv"
 site = SiteInfo(flatirons_site,
                 solar_resource_file=solar_file,
@@ -85,7 +90,6 @@ def simulate_hybrid(sizes, plotting=False):
 
     # setup capacity credit for wind and solar, hybrid will be set up within opt loop
     hybrid_plant.assign(fin_info["Revenue"])
-    hybrid_plant.ppa_price = 0.0425
 
     # O&M costs
     hybrid_plant.assign(fin_info["SystemCosts"])
@@ -143,14 +147,13 @@ if __name__ == "__main__":
         elif k == "grid_charging":
             if dispatch_options:
                 dispatch_options["grid_charging"] = bool(v)
-        else:
+        elif k != 'objective':
             raise IOError(f"Configuration key '{k}' not recognized")
     logger.info(f"config: {config_dict}")
 
     # Run a single system
-    simulate_hybrid((6, 123, 2), True)
-
-    exit()
+    # simulate_hybrid((123, 60, 2), True)
+    # exit()
 
     # Run a grid of sizes
     solar_sizes = range(1, 401, 75)
