@@ -86,9 +86,9 @@ def simulate_hybrid(sizes, plotting=False):
             res[val] = json.loads(str(getattr(hybrid_plant, val)))
         except:
             print("error printing", val)
-    # import pprint
-    # pprint.pprint(res)
-    # print(sizes, {"npvs": npvs, "bcr": benefit_cost_ratios})
+    import pprint
+    pprint.pprint(res)
+    print(sizes, {"npvs": npvs, "bcr": benefit_cost_ratios})
     # print(hybrid_plant.battery.replacement_costs)
 
     # import numpy as np
@@ -109,7 +109,7 @@ if __name__ == "__main__":
     fin_info, wind_info, dispatch_options, site = setup_config(config_dict, fin_info, wind_info, resource_dir)
 
     # Run a single system
-    # simulate_hybrid((100, 100, 50), False)
+    # simulate_hybrid((300, 300, 100), True)
     # exit()
 
     # Run a grid of sizes
@@ -120,7 +120,7 @@ if __name__ == "__main__":
     out_dir = params_dir.parent / "results"
     if config_dict:
         out_dir = Path(sys.argv[1]).parent
-    with mp.Pool(18) as p:
+    with mp.Pool(36) as p:
         results = p.map(simulate_hybrid, product(solar_sizes, wind_sizes, battery_sizes))
         with open(out_dir / "hybrid_size_grid.json", "w") as f:
             json.dump(results, f)

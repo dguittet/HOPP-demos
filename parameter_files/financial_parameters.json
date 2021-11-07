@@ -60,6 +60,9 @@
       "ptc_sta_term": 10,
       "itc_fed_amount": 0,
       "itc_fed_percent": 0
+    },
+    "battery": {
+      "itc_fed_percent": 22
     }
   },
   "Revenue": {

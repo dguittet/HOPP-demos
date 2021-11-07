@@ -1,8 +1,9 @@
 {
   "energy_price_base": 4,
   "grid_charging": 0,
+  "pv_charging_only": 1,
   "objective": "NPV",
   "pv_itc_fed_percent": 22,
-  "wind_ptc_fed_amount": [0.015],
+  "wind_ptc_fed_amount": [0.0],
   "location": "TX"
 }

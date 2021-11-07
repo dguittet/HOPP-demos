@@ -21,6 +21,7 @@ def setup_config(config_dict, fin_info, wind_info, resource_dir):
         'battery_dispatch': 'simple',
         # 'battery_dispatch': 'one_cycle_heuristic',
         'grid_charging': True,
+        'pv_charging_only': False,
         'log_name': ""  # need to disable for multiprocessing
     }
 
@@ -34,6 +35,10 @@ def setup_config(config_dict, fin_info, wind_info, resource_dir):
         elif k == "grid_charging":
             if dispatch_options:
                 dispatch_options["grid_charging"] = bool(v)
+                fin_info["TaxCreditIncentives"]["battery"]["itc_fed_percent"] = 0
+        elif k == "pv_charging_only":
+            if dispatch_options:
+                dispatch_options["pv_charging_only"] = bool(v)
         elif k == "pv_itc_fed_percent":
             fin_info["TaxCreditIncentives"]["pv"]["itc_fed_percent"] = v
         elif k == "wind_ptc_fed_amount":

@@ -287,7 +287,7 @@ class HybridLayoutProblem(OptimizationProblem):
 
 optimizer_config = {
     'method':               'CMA-ES',
-    'nprocs':               18,
+    'nprocs':               36,
     'generation_size':      100,
     'selection_proportion': .33,
     'prior_scale':          1.0,
