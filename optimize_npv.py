@@ -326,7 +326,7 @@ if __name__ == "__main__":
                                   sim_config=simulation_options
                                   )
     optimizer = OptimizationDriver(problem, recorder=DataRecorder.make_data_recorder(str(out_dir),
-                                                                                     "results"),
+                                                                                     "results.log"),
                                    **optimizer_config)
     # test
     # candidate = np.array([13.442437254309148, 1.0, 1.7815201461041121, 2.4659729450958254, 0.5280016407689111,
