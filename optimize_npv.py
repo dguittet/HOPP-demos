@@ -287,7 +287,7 @@ class HybridLayoutProblem(OptimizationProblem):
 
 optimizer_config = {
     'method':               'CMA-ES',
-    'nprocs':               36,
+    'nprocs':               12,
     'generation_size':      100,
     'selection_proportion': .33,
     'prior_scale':          1.0,
@@ -326,19 +326,19 @@ if __name__ == "__main__":
                                   sim_config=simulation_options
                                   )
     optimizer = OptimizationDriver(problem, recorder=DataRecorder.make_data_recorder(str(out_dir),
-                                                                                     "results2.log"),
+                                                                                     "results"),
                                    **optimizer_config)
     # test
-    # candidate = np.array([8.273861950500912, 0.0, 2.215438251144771, -0.5990308745233592, 0.3370498165090887, 0.0,
-    #                       0.5692060027320252, 0.336565603590347, 0.22708080692015087, 0.23625796087304649,
-    #                       2.900603473909988, 8.106257286639625, 0.4100764661988576, 0.0054485233298723155])
+    # candidate = np.array([13.442437254309148, 1.0, 1.7815201461041121, 2.4659729450958254, 0.5280016407689111,
+    #                       0.5906494019207649, 0.3604529998936307, 0.47203467667476945, -1.7071199331389482, 0.9,
+    #                       6.691525809267106, 3.1519852116340292, 0.6416508078943377, 0.0])
     # print(problem.objective(candidate))
     # exit()
 
     best_score, best_evaluation, best_solution = optimizer.central_solution()
     print(-1, ' ', best_score, best_evaluation)
 
-    while optimizer.num_iterations() < 12:
+    while optimizer.num_iterations() < 16:
         optimizer.step()
         best_score, best_evaluation, best_solution = optimizer.best_solution()
         central_score, central_evaluation, central_solution = optimizer.central_solution()
