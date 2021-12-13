@@ -17,7 +17,7 @@ This repo contains scripts for running HOPP optimizations, the input files that 
 There are multiple configurations in the results folder. To run the `EP3.75_GC_0_NPV` configuration,
 
 ```
-python results/EP3.75_GC_0_NPV/README.json
+python optimize_npv.py results/EP3.75_GC_0_NPV/README.json
 ```
 
 Which will produce the `results.log.jsonl` output file in the same directory which has information on the optimization and best candidates.
